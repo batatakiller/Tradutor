@@ -170,13 +170,23 @@ async function requestLiveToken() {
   const response = await fetch(`/api/live-token?${params}`, {
     cache: 'no-store'
   });
-  const body = await response.json().catch(() => ({}));
+  const text = await response.text();
+  const body = parseJson(text);
 
   if (!response.ok) {
-    throw new Error(body.error || 'Falha ao criar token temporario.');
+    const message = body?.error || text || 'Falha ao criar token temporario.';
+    throw new Error(`Falha ao criar token temporario (${response.status}): ${message}`);
   }
 
   return body;
+}
+
+function parseJson(text) {
+  try {
+    return JSON.parse(text);
+  } catch {
+    return null;
+  }
 }
 
 function buildSetupMessage(tokenData) {

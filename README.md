@@ -22,6 +22,21 @@ npm start
 http://localhost:3000
 ```
 
+## Deploy Na Vercel
+
+1. Suba este repositório no GitHub.
+2. Importe o projeto na Vercel.
+3. Adicione a variável de ambiente `GEMINI_API_KEY` no painel da Vercel.
+4. Faça um novo deploy depois de adicionar a variável.
+
+O endpoint `api/live-token` já fica pronto automaticamente na Vercel, e a página usa os arquivos estáticos de `public/`.
+
+Se aparecer "Falha ao criar token temporario", abra o projeto na Vercel e confira:
+
+- `Settings` -> `Environment Variables` -> `GEMINI_API_KEY` existe em `Production`.
+- Depois de adicionar ou trocar a chave, faça `Redeploy`.
+- A URL `/api/live-token?targetLanguageCode=pt-BR` deve responder JSON, nao uma pagina 404.
+
 ## Uso no celular
 
 O microfone do celular exige HTTPS. Para usar em aula, publique este projeto em um servidor com HTTPS ou use um tunel HTTPS apontando para `localhost:3000`.

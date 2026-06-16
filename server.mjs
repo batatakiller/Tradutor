@@ -120,22 +120,36 @@ async function handleTokenRequest(url, res) {
 }
 
 async function createEphemeralToken(body) {
-  const response = await fetch(`${AUTH_TOKEN_ENDPOINT}?key=${encodeURIComponent(apiKey)}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(body)
-  });
+  let response;
+  try {
+    response = await fetch(`${AUTH_TOKEN_ENDPOINT}?key=${encodeURIComponent(apiKey)}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+  } catch (error) {
+    throw new Error(`A maquina nao conseguiu conectar na API da Gemini. ${error.message}`);
+  }
 
-  const payload = await response.json().catch(() => ({}));
+  const text = await response.text();
+  const payload = parseJson(text);
 
   if (!response.ok) {
-    const message = payload.error?.message || 'Falha ao criar token temporario na Gemini.';
+    const message = payload?.error?.message || text || 'Falha ao criar token temporario na Gemini.';
     throw new Error(message);
   }
 
   return payload;
+}
+
+function parseJson(text) {
+  try {
+    return JSON.parse(text);
+  } catch {
+    return null;
+  }
 }
 
 function buildBidiSetup(targetLanguageCode, echoTargetLanguage) {
