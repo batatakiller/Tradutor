@@ -167,7 +167,7 @@ async function requestLiveToken() {
     echoTargetLanguage: String(elements.echoTarget.checked)
   });
 
-  const response = await fetch(`/api/live-token?${params}`, {
+  const response = await fetch(`/api/session?${params}`, {
     cache: 'no-store'
   });
   const text = await response.text();
